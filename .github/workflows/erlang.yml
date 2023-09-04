@@ -1,0 +1,21 @@
+name: Erlang CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        erlang: [ 24,25,26 ]
+
+    container:
+      image: erlang:${{ matrix.erlang }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: dialyzer --build_plt --apps erts kernel stdlib mnesia
+    - run: dialyzer --src should_pass.erl
